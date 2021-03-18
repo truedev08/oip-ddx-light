@@ -1,0 +1,1 @@
+{"ast":null,"code":"var __jsx = React.createElement;\nimport React from 'react';\nimport LoginForm from '../components/views/dumb/loginForm/LoginForm'; //import LoginForm from '../auth/Login'\n\nexport default function LoginPage() {\n  return __jsx(\"div\", null, __jsx(LoginForm, null));\n}","map":null,"metadata":{},"sourceType":"module"}

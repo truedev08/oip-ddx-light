@@ -1,0 +1,1 @@
+{"ast":null,"code":"export default function isEmpty(obj) {\n  for (let key in obj) {\n    if (obj.hasOwnProperty(key)) {\n      return false;\n    }\n  }\n\n  return true;\n}","map":null,"metadata":{},"sourceType":"module"}

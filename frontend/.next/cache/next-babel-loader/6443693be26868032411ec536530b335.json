@@ -1,0 +1,1 @@
+{"ast":null,"code":"export const SET_PLATFORM_DATA = 'SET_PLATFORM_DATA';\nexport const setPlatformData = platformData => ({\n  type: SET_PLATFORM_DATA,\n  platformData\n});\nexport const REGISTER = 'REGISTER';\nexport const registerPlatform = registered => ({\n  type: REGISTER,\n  registered\n});","map":null,"metadata":{},"sourceType":"module"}
