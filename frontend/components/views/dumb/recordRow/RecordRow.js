@@ -8,7 +8,7 @@ import config from '../../../../config.js';
 import knownTemplates from '../../../../templates/knownTemplates';
 import getIpfsUrl from '../../../../helpers/getIpfsUrl';
 import { connect } from 'react-redux';
-import { purchaseRecord, proofOfPurchase } from '../../../../redux/actions/Wallet/thunks.js'
+import { purchaseRecord, proofOfPurchase } from '../../../../redux/modules/Wallet/thunks';
 import { updatePurchasedTxid } from '../../../../redux/actions/Autopay/creators'
 
 

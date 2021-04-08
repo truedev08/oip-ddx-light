@@ -28,6 +28,12 @@ const {
   JWT_SECRET
 } = process.env;
 
+const users = [
+  { id: 1, name: 'Alex', email: 'alex@mail.com', password: 'secret' },
+  { id: 2, name: 'John', email: 'john@mail.com', password: 'secret' },
+  { id: 3, name: 'Jasmine', email: 'jasmine@mail.com', password: 'secret' }
+]
+
 let signToken = user => {
   return JWT.sign(
       {
@@ -203,7 +209,7 @@ exports.delete_user = async (req, res) => {
   }
 };
 
-exports.signUp = async (req, res, next) => {
+exports.signupPost = async (req, res, next) => {
   try {
             
     var { displayName, _id, email, password, mnemonic, wallet } = req.body;
@@ -212,31 +218,34 @@ exports.signUp = async (req, res, next) => {
       mnemonic = await UserWallet.createMnemonic()
     } 
 
-    console.log("this is mnemonic", mnemonic);
+    console.log("this is mnemonic: ", mnemonic);
     
 
     // check for user in DB
     const foundUser = await User.findOne({
       $or: [{ displayName: displayName }, { email: email }],
     });
-
+    console.log("00000000000000000000000000000000000000000000 - 1");
     if (foundUser) {
       return res.status(409).json({
-        error: "Display name or email already exists",
+        error: "Display name or email already exists 00000000000",
         success: false,
-        msg: "Display name or email already exists",
+        msg: "Display name or email already exists 00000000000",
       });
     } else {
-
-    bcrypt.hash(password, ENCRYPTION_CONST, (err1, passHash) => {
-      if (err1) {
-        return res.status(500).json({
-          error: err1,
-          success: false,
-          msg: "something went wrong, try again later",
-        });
-      }
-      bcrypt.hash(mnemonic, ENCRYPTION_CONST,(err2, mnemonicHash)=> {
+      console.log("00000000000000000000000000000000000000000000 - 2");
+      const passHash = await bcrypt.hash(password, ENCRYPTION_CONST)
+      const mnemonicEncrypt = AES.encrypt(mnemonic, password).toString();
+      const user = new User({
+        displayName: displayName,
+        email: email,
+        password: passHash,
+        mnemonic: mnemonicEncrypt
+        //memberSince: Date.now(),
+      });
+      user.save()
+      /*
+      bcrypt.hash(mnemonic, ENCRYPTION_CONST,(err2, mnemonicHash) => {
         if (err2) {
           return res.status(500).json({
             error: err2,
@@ -254,7 +263,7 @@ exports.signUp = async (req, res, next) => {
           user.save()
         }
       })
-    });
+      */
   }
 
     // use this to grab addresses
@@ -276,52 +285,48 @@ exports.signUp = async (req, res, next) => {
   }
 }
 
-exports.logIn = async (req, res, next) => {
-  User.find({displayName: req.body.displayName})
-    .exec()
-    .then(user => {
-      if(user.length < 1) {
-        return res.status(401).json({
-          message: 'Auth failed 1'
-        })
-      }
-      bcrypt.compare(req.body.password, user[0].password, (err, result) => {
-        if (err) {
-          return res.status(401).json({
-            message: 'Auth failed 2'
-          })
-        }
-        console.log(user[0].email);
-        console.log(user[0]._id);
-        
-        if (result) {
-          const token = JWT.sign(
-            {
-              email: user[0].email,
-              userId: user[0]._id
-            }, 
-            JWT_SECRET, 
-            {
-              expiresIn: "1h"
-            }
-          )
+exports.loginGet = async (req, res, next) => {
+  //req.session.userId = 
+}
 
-          return res.status(200).json({
-            message: 'Auth Successful',
-            token: token
-          })
-        }
-        res.status(401).json({
-          message: 'Auth failed 3'
-        })
-      })
+exports.loginPost = async (req, res, next) => {
+  const user = await User.find({displayName: req.body.displayName}).exec()
+  if(user.length < 1) {
+    return res.status(401).json({
+      message: 'Auth failed 1'
     })
-    .catch(err => {
-      console.log(err);
-      res.status(500).json({
-        error: err
-      });
-    });
+  }
+  const result = await bcrypt.compare(req.body.password, user[0].password)
+
+  console.log(user)
+  
+  if (result) {
+    const token = JWT.sign(
+      {
+        email: user[0].email,
+        userId: user[0]._id
+      }, 
+      JWT_SECRET, 
+      {
+        expiresIn: "1h"
+      }
+    )
+    //res.send(user[0].name)
+    //req.session.userId = user[0]._id;
+    return res.status(200).json({
+      message: 'Auth Successful',
+      token: token,
+      displayName: user[0].displayName,
+      user: user[0]
+    })
+  }
+  res.status(401).json({
+    message: 'Auth failed 3'
+  })
+}
+
+exports.logoutPost = async (req, res, next) => {
+
 }
 
 /***USER CREATION,Currently hashes password using bcrypt, it also checks if email was used and wont let another user be created with the same email twice */

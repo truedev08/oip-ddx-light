@@ -11,11 +11,38 @@ const User = require("../../task-manager/src/models/user.js");
 
 const UsersController = require("../../task-manager/src/controller/user");
 
+/*
+const redirectLogin = (req, res, next) => {
+  if (!req.session.userId) {
+    res.redirect('/login')
+  } else {
+    next()
+  }
+}
+
+const redirectHome = (req, res, next) => {
+  if (req.session.userId) {
+    res.redirect('/home')
+  } else {
+    next()
+  }
+}
+*/
 
 //router.post("/signup", UsersController.user_sign_up);
-router.post("/signup", UsersController.signUp);
+//router.get("/signup", UsersController.signUp);
 
-router.post("/login", UsersController.logIn)
+router.get("/login", UsersController.loginGet)
+
+router.post("/signup", UsersController.signupPost);
+
+router.post("/login", UsersController.loginPost)
+
+router.post("/logout", UsersController.logoutPost)
+
+router.post("/test", (req, res, next) => {
+  return res.status(500).json({thing: "hello worlasdasdasd"})
+})
 
 //router.post("/login", UsersController.user_login_post);
 

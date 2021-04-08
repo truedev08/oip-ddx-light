@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import withStyles from 'react-jss'
 import PropTypes from 'prop-types'
 import { RecordTemplate } from 'oip-react'
+import { useSelector } from 'react-redux'
 
 const styles = {
   root: {
@@ -25,6 +26,10 @@ const TemplatePublisher = ({
   extendTemplateIds,
   withPublisher = true
 }) => {
+
+  const user = useSelector(state => state.User.user)
+  console.log(user);
+  
 
   const [feedback, setFeedback] = useState(null)
 

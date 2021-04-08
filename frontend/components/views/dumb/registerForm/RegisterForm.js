@@ -91,10 +91,12 @@ const RegisterForm = ({
           setPassErrorMessage(`User Created, redirecting to dashboard...`);
           setRegSuccess(true);
           // walletData();
+          /*
           setTimeout(() => {
             setRegSuccess(false);
             location.push("/");
           }, 5000);
+          */
         }
       });
   };

@@ -1,4 +1,4 @@
-import React from 'react'
+import React , { useEffect, useState } from 'react'
 import withStyles from 'react-jss'
 import PropTypes from 'prop-types'
 import { MdSearch } from 'react-icons/md'
@@ -90,6 +90,11 @@ const ExplorerHeader = ({
   theme
 }) => {
   const fetching = recordsFetching || templatesFetching
+  const [displayName, setDisplayName] = useState()
+
+  useEffect(() => {
+    setDisplayName(localStorage.getItem("displayName"))
+  }, []);
 
   function handleOnEnter (e) {
     if (e.keyCode === 13 && !fetching) {
@@ -99,6 +104,23 @@ const ExplorerHeader = ({
 
   function handleSubmit () {
     handleSearchSubmit()
+  }
+
+  function UserGreeting(props) {
+    //return <h3>{window.localStorage.getItem("displayName")} is logged in</h3>;
+    return <div>{displayName} is logged in!</div>
+  }
+  
+  function GuestGreeting(props) {
+    return <h3>Not Logged In.</h3>;
+  }
+
+  function Greeting(props) {
+    const isLoggedIn = props.isLoggedIn;
+    if (true) {
+      return <UserGreeting />;
+    }
+    return <GuestGreeting />;
   }
 
   return <div className={classes.root}>
@@ -130,6 +152,10 @@ const ExplorerHeader = ({
         <option value={'Records'}>Records</option>
         <option value={'Templates'}>Templates</option>
       </select>
+    </div>
+    <div>
+      <Greeting isLoggedIn={true}>
+      </Greeting>
     </div>
   </div>
 }

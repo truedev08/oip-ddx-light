@@ -12,7 +12,7 @@ import {
   tip,
   purchaseRecord,
   proofOfPurchase
-} from '../redux/actions/Wallet/thunks';
+} from '../redux/modules/Wallet/thunks';
 
 import { setActivePage } from '../redux/actions/Interface/creators';
 

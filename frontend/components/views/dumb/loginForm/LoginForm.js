@@ -8,7 +8,7 @@ import PropTypes from 'prop-types';
 import withStyles from 'react-jss'
 import axios from 'axios'
 import { MdCropSquare } from "react-icons/md";
-import { AUTOPAY } from "../../../../redux/actions/Interface/creators";
+import { setUser } from "../../../../redux/modules/User/actions";
 import Router from "next/router";
 
 //const history = useHistory();
@@ -39,10 +39,10 @@ const styles = theme => ({
 })
 
 const LoginForm = ({
-  classes,
+  classes
 }) => {
   //let history = useHistory();
-  //const dispatch = useDispatch();
+  const dispatch = useDispatch();
 
   const [displayName, setDisplayName] = useState("");
   const [email, setEmail] = useState("");
@@ -63,21 +63,48 @@ const LoginForm = ({
       });
       const data = await response.json();
 
-      console.log(data)
-
+      console.log("this is the data: ", data)
+      console.log(data.displayName);
+      console.log("setUser: ", setUser(data.user));
+      
+      
+      dispatch(setUser(data.user))
       
       if (data.msg === "Please enter correct credentials") {
         setError(data.msg);
         window.localStorage.removeItem("token");
+        window.localStorage.removeItem("displayName");
       } else if (data.activated === false) {
         window.localStorage.removeItem("token");
+        window.localStorage.removeItem("displayName");
         setVerified(true);
       } else {
         window.localStorage.setItem("token", JSON.stringify(data.token));
+        window.localStorage.setItem("displayName", data.displayName);
         dispatch({ type: "LOGIN", payload: true });
         //socket.emit("login");
         //history.push("/");
       }
+
+      /*
+        if (data.msg === "Auth Successful") {
+          window.localStorage.setItem("token", JSON.stringify(data.token));
+          window.localStorage.setItem("displayName", data.displayName);
+          dispatch({ type: "LOGIN", payload: true });
+          //socket.emit("login");
+          //history.push("/");
+        } else if (data.activated === false) {
+          window.localStorage.removeItem("token");
+          window.localStorage.removeItem("displayName");
+          setVerified(true);
+        } else {
+          if (data.msg != undefined) {
+            setError(data.msg);
+          }
+          window.localStorage.removeItem("token");
+          window.localStorage.removeItem("displayName");
+        }
+      */
 
 
       //const { mnemonic } = data;
@@ -169,5 +196,6 @@ const LoginForm = ({
 LoginForm.propTypes = {
   classes: PropTypes.object.isRequired,
 }
+
 
 export default withStyles(styles, { injectTheme: true }) (LoginForm);
