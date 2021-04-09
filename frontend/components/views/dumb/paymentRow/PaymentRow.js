@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import withStyles from 'react-jss';
 import PropTypes from 'prop-types';
+import { useSelector } from 'react-redux';
 
 const styles = (theme) => ({
   root: {
@@ -41,6 +42,7 @@ const styles = (theme) => ({
 });
 
 const PaymentRow = ({ classes, paymentTemplate, paymentAddress, tip }) => {
+  const user = useSelector(state => state.User.user);
   const [txid, setTxid] = useState(undefined);
   const [showTxid, setShowTxid] = useState(false);
   async function sendTip(tV) {

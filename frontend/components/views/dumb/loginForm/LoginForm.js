@@ -1,15 +1,20 @@
 import React, { useState } from "react";
 //import { useHistory } from "react-router-dom";
-import Link from 'next/link'
+import Link from 'next/link';
 import { useDispatch } from "react-redux";
-import Alert from "../../../shared/Alert";
+import Router from "next/router";
 import { sortedLastIndex } from "lodash";
 import PropTypes from 'prop-types';
 import withStyles from 'react-jss'
 import axios from 'axios'
 import { MdCropSquare } from "react-icons/md";
+import { Wallet } from '@oipwg/hdmw';
 import { setUser } from "../../../../redux/modules/User/actions";
-import Router from "next/router";
+import config from "../../../../config";
+import Alert from "../../../shared/Alert";
+import { decrypt } from "../../../../helpers-functions/crypto";
+import { setHdmwWallet } from "../../../../redux/modules/Wallet/actions";
+import { initExplorerWallet } from "../../../../redux/modules/Wallet/thunks";
 
 //const history = useHistory();
 
@@ -37,6 +42,9 @@ const styles = theme => ({
     backgroundColor: '#e7e7e7'
   }
 })
+
+
+// Move to Helpers directory
 
 const LoginForm = ({
   classes
@@ -69,6 +77,35 @@ const LoginForm = ({
       
       
       dispatch(setUser(data.user))
+
+      // decrypt mnemonic
+      // derive privatekey from mnemonic 
+      // 
+
+      
+
+      const mnemonic = decrypt(data.user.mnemonic, password)
+      const hdmwWallet = new Wallet(mnemonic, { discover: false })
+      dispatch(setHdmwWallet(hdmwWallet))
+      //console.log(hdmwWallet);
+      
+      const mainAddress = hdmwWallet.getCoin('flo').getMainAddress();
+
+      //console.log("test 1", hdmwWallet.getCoin('flo'));
+      //console.log("test 2", mainAddress);
+      
+      const privatekey = mainAddress.getPrivateAddress()
+      //console.log("private key: ", privatekey);
+      
+      // Todo:
+      // set HDMW wallet to redux store
+      // pass the private key to the records template publisher component 
+      // to get the private key, call getFloWif with the HDMW wallet
+      // to get the HDMW wallet inside a component, use React-Redux's useSelector
+      // const hdmwWallet = useSelector(state => state.Wallet.hdmwWallet)
+      // const wif = getFloWif(hdmwWallet)
+
+      dispatch(initExplorerWallet({ privatekey, network: config.network, options: { explorerUrl: config.explorerUrl } }))
       
       if (data.msg === "Please enter correct credentials") {
         setError(data.msg);

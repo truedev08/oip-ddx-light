@@ -3,6 +3,7 @@ import withStyles from 'react-jss'
 import PropTypes from 'prop-types'
 import { RecordTemplate } from 'oip-react'
 import { useSelector } from 'react-redux'
+import getFloWif from '../../../../helpers-functions/getWif'
 
 const styles = {
   root: {
@@ -27,9 +28,12 @@ const TemplatePublisher = ({
   withPublisher = true
 }) => {
 
+  const hdmwWallet = useSelector(state => state.Wallet.hdmwWallet)
+  const wif = getFloWif(hdmwWallet)
+
   const user = useSelector(state => state.User.user)
-  console.log(user);
-  
+  console.log("user: ", user);
+  console.log("wif: ", wif);
 
   const [feedback, setFeedback] = useState(null)
 
@@ -50,6 +54,8 @@ const TemplatePublisher = ({
       _extends={extendTemplateIds}
       withPublisher={withPublisher}
       feedback={feedback}
+      hidePrivateKeyInput={!!wif}
+      wif={wif}
     />
   </div>
 }

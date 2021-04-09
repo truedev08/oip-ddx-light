@@ -4,6 +4,12 @@ export const setExplorerWallet = (xWallet) => ({
   xWallet
 })
 
+export const SET_HDMW_WALLET = 'SET_HDMW_WALLET'
+export const setHdmwWallet = (hdmwWallet) => ({
+  type: SET_HDMW_WALLET,
+  hdmwWallet
+})
+
 export const TX_PENDING = 'TX_PENDING'
 export const txPending = () => ({
   type: TX_PENDING

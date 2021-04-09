@@ -21,7 +21,9 @@ const RecordProtoJSS = withStyles(RecordProtoStyles)(RecordProtoContainer)
 
 const RecordPublisher = ({
   classes,
-  publishTemplates
+  publishTemplates,
+  hidePrivateKeyInput,
+  wif
 }) => {
 
   const [feedback, setFeedback] = useState(null)
@@ -47,6 +49,8 @@ const RecordPublisher = ({
       onSuccess={handleOnSuccess}
       onError={handleOnError}
       feedback={feedback}
+      hidePrivateKeyInput={hidePrivateKeyInput}
+      wif={wif}
     />
   </div>
 }

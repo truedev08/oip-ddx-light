@@ -14,6 +14,7 @@ if (config.privatekey) {
 const initialState = {
   //xWallet: explorerWallet, --- edited by truedev
   xWallet: undefined,
+  hdmwWallet: undefined,
   _exchange: new Exchange(),
   txPending: false,
   txSuccess: false,
@@ -28,6 +29,12 @@ const Wallet = (state = initialState, action) => {
       return {
         ...state,
         xWallet: action.xWallet
+      }
+    }
+    case actions.SET_HDMW_WALLET: {
+      return {
+        ...state,
+        hdmwWallet: action.hdmwWallet
       }
     }
     case actions.TX_PENDING:

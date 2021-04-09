@@ -13,8 +13,14 @@ import {
   txError,
   txPending,
   txSuccess,
-  purchase_record
+  purchase_record,
+  setExplorerWallet
 } from './actions';
+import getFloWif from '../../../helpers-functions/getWif';
+
+
+
+// Todo: Set wif to the redux store
 
 const { floMainnet, floTestnet } = Networks;
 
@@ -23,6 +29,7 @@ const network = {
   flo_testnet: floTestnet.network
 };
 function getPubAddress(wif, useNetwork = 'mainnet') {
+  console.log(wif);
   let floNetwork =
     useNetwork === 'mainnet' ? network.flo_mainnet : network.floTestnet;
   const EC = ECPair.fromWIF(wif, floNetwork);
@@ -134,7 +141,7 @@ export const getBalance = (addr) => async (dispatch, getState) => {
     );
     return;
   }
-  let address = addr || getPubAddress(config.privatekey);
+  let address = addr || getPubAddress(getFloWif(Wallet.hdmwWallet));
   let explorer = xWallet.explorer;
   let res;
   try {
@@ -243,7 +250,7 @@ export const proofOfPurchase = ({
   const { valid_until, pre_image, } = response.data
 
   let signature = wallet.signMessage(pre_image)
-  let publicAddress = getPubAddress(config.privatekey)
+  let publicAddress = getPubAddress(getFloWif(Wallet.hdmwWallet))
   
   const body = { valid_until, id: txid, term: terms, pre_image, signature, payment_txid, signing_address: publicAddress }
 
@@ -324,3 +331,12 @@ export const getBalanceWallet = (wallet) => dispatch => {
   });
 }
 
+export const initExplorerWallet = ({ privatekey, network, options }) => dispatch => {
+  const explorerWallet = new OIP(privatekey, network, options).wallet
+  dispatch(setExplorerWallet(explorerWallet))
+}
+
+export const initHDMWWallet = (mnemonic) => dispatch => {
+  const hdmwWallet = new HDMW(mnemonic)
+  dispatch(setHdmwWallet(hdmwWallet))
+}

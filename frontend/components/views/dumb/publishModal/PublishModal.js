@@ -5,6 +5,8 @@ import { MdClose } from 'react-icons/md'
 import { TEMPLATE, RECORD } from '../../../../redux/reducers/Publisher'
 import TemplatePublisher from '../templatePublisher/TemplatePublisher'
 import RecordPublisher from '../recordPublisher/RecordPublisher'
+import { useSelector } from 'react-redux'
+import getFloWif from '../../../../helpers-functions/getWif'
 
 const styles = theme => ({
   modalBackground: {
@@ -87,6 +89,9 @@ const PublishModal = ({
   const publishRecord = publishType === RECORD
   const publishTemplate = publishType === TEMPLATE
 
+  const hdmwWallet = useSelector(state => state.Wallet.hdmwWallet)
+  const wif = getFloWif(hdmwWallet)
+
   function handleCloseModal () {
     closePublisherModal()
   }
@@ -99,9 +104,13 @@ const PublishModal = ({
       <div className={classes.modalBody}>
         {publishTemplate && <TemplatePublisher
           extendTemplateIds={extendTemplateIds}
+          hidePrivateKeyInput={!!wif}
+          wif={wif}
         />}
         {publishRecord && <RecordPublisher
           publishTemplates={publishTemplates}
+          hidePrivateKeyInput={!!wif}
+          wif={wif}
         />}
       </div>
       <div className={classes.modalFoot} />
